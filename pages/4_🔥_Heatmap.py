@@ -30,6 +30,10 @@ def main():
 
     Map = geemap.Map()
 
+    roi = None
+    coordinates = None
+
+
     st.sidebar.markdown("<h3 style='text-align: center; color: grey;'>OR</h3>", unsafe_allow_html=True)
 
     # Upload a zipped shapefile
@@ -72,6 +76,7 @@ def main():
 
             if not gdf.empty:
                 roi = geemap.geopandas_to_ee(gdf)
+
 
         Map.add_gdf(gdf, 'polygon')
 
