@@ -68,4 +68,4 @@ if uploaded_shp_file is not None:
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
 
-m.to_streamlit(center=[48.0196, 66.9237], zoom=5, height=600)
+m.to_streamlit(center=[48.0196, 66.9237], zoom=5, height=700)
