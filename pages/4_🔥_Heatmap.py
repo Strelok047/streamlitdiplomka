@@ -29,9 +29,9 @@ st.title("Interactive Map with Heatmap")
 # Изначально показываем карту с центром на Казахстане
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 
-# Отображение карты по умолчанию
+# Отображение карты по умолчанию с помощью st_folium
 st.subheader("Default Interactive Map")
-st_folium(m, width=700, height=600)
+st_folium(m, width=700)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -56,13 +56,13 @@ if uploaded_shp_file is not None:
 
             # Отображаем данные о шейп-файле в Streamlit
             st.write("Data from Shapefile:")
-            st.write(gdf)  # Показываем таблицу данных из шейп-файла
+            st.write(gdf)
 
             # Добавляем шейп-файл на существующую карту
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Отображаем обновленную карту с добавленным слоем
+            # Отображаем обновленную карту с добавленным слоем с помощью st_folium
             st.subheader("Map with Shapefile Data")
-            st_folium(m, width=700, height=600)  # Отображаем карту с новыми данными
+            st_folium(m, width=700)  # Используем st_folium для отображения карты
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
