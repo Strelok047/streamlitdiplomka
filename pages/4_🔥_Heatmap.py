@@ -26,9 +26,12 @@ st.sidebar.info(
 
 st.title("Interactive Map with Heatmap")
 
-# Изначально показываем карту с центром на Казахстане
+# Изначально показываем карту с центром на Казахстане, без данных
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
-m.to_streamlit(center=[48.0196, 66.9237], zoom=5, height=600)
+
+# Отображение карты по умолчанию
+st.subheader("Default Interactive Map")
+st_folium(m, width=700)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -51,16 +54,15 @@ if uploaded_shp_file is not None:
             # Загружаем шейп-файл с помощью geopandas
             gdf = gpd.read_file(shapefile_path)
 
-            # Обновляем карту с шейп-файлом, используя фиксированный центр на Казахстане
-            m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
-            m.add_gdf(gdf, layer_name="Shapefile Layer")
-
             # Отображаем данные о шейп-файле в Streamlit
             st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Отображаем обновленную карту
+            # Добавляем шейп-файл на ту же карту
+            m.add_gdf(gdf, layer_name="Shapefile Layer")
+
+            # Отображаем обновленную карту с добавленным шейп-файлом
             st.subheader("Map with Shapefile Data")
-            m.to_streamlit(center=[48.0196, 66.9237], zoom=5, height=600)
+            st_folium(m, width=700)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
