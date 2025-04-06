@@ -4,6 +4,7 @@ import os
 import tempfile
 import geopandas as gpd
 import leafmap.foliumap as leafmap
+from streamlit_folium import st_folium
 
 # Настройка страницы Streamlit
 st.set_page_config(layout="wide")
