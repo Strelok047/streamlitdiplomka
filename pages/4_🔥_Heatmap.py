@@ -1,6 +1,6 @@
 import zipfile
 import os
-import pandas as pd
+import geopandas as gpd
 import streamlit as st
 import leafmap.foliumap as leafmap
 
@@ -19,32 +19,26 @@ with zipfile.ZipFile(archive_path, 'r') as zip_ref:
 extracted_files = os.listdir("extracted_files")
 st.write("Извлеченные файлы:", extracted_files)
 
-# Предположим, что один из файлов - это CSV
-# Замените 'your_data.csv' на фактическое имя CSV файла
-csv_file_path = os.path.join("extracted_files", "agroclim_data.csv")
+# Предположим, что шейп-файл называется "agroclim_data.shp"
+shapefile_path = os.path.join("extracted_files", "agroclim_data.shp")
 
-# Проверяем, существует ли CSV файл
-if os.path.exists(csv_file_path):
-    # Загружаем CSV в DataFrame
-    df = pd.read_csv(csv_file_path)
+# Проверяем, существует ли шейп-файл
+if os.path.exists(shapefile_path):
+    # Загружаем шейп-файл с помощью geopandas
+    gdf = gpd.read_file(shapefile_path)
 
-    # Отображаем данные в Streamlit
-    st.write(df)
+    # Отображаем информацию о шейп-файле в Streamlit
+    st.write(gdf)
 
-    # Создаем карту с тепловой картой
-    st.title("Heatmap")
+    # Создаем карту с шейп-файлом
+    st.title("Map with Shapefile Data")
 
     with st.expander("See source code"):
         with st.echo():
+            # Создаем карту и добавляем шейп-файл
             m = leafmap.Map(center=[40, -100], zoom=4)
-            m.add_heatmap(
-                csv_file_path,
-                latitude="latitude",
-                longitude="longitude",
-                value="pop_max",
-                name="Heat map",
-                radius=20,
-            )
+            m.add_gdf(gdf, layer_name="Shapefile Layer")
+
     m.to_streamlit(height=700)
 else:
-    st.error("CSV файл не найден в извлеченных данных.")
+    st.error("Шейп-файл не найден в извлеченных данных.")
