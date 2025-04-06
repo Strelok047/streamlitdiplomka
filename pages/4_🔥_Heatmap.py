@@ -31,7 +31,7 @@ m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
-st_folium(m, width=700)
+st_folium(m)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -63,6 +63,6 @@ if uploaded_shp_file is not None:
 
             # Отображаем обновленную карту с добавленным слоем
             st.subheader("Map with Shapefile Data")
-            st_folium(m, width=700)
+            st_folium(m)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
