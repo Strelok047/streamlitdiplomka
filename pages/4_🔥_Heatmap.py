@@ -31,7 +31,7 @@ m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
-m.to_streamlit(height=600)  # исправленный вызов без второго аргумента m
+m.to_streamlit(height=600)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -56,13 +56,13 @@ if uploaded_shp_file is not None:
 
             # Отображаем данные о шейп-файле в Streamlit
             st.write("Data from Shapefile:")
-            st.write(gdf)
+            st.write(gdf)  # Показываем таблицу данных из шейп-файла
 
             # Добавляем шейп-файл на существующую карту
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
             # Отображаем обновленную карту с добавленным слоем
             st.subheader("Map with Shapefile Data")
-            m.to_streamlit(height=600)  # повторно вызываем m.to_streamlit без второго аргумента
+            m.to_streamlit(height=600)  # Отображаем карту с новыми данными
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
