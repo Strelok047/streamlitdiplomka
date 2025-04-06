@@ -59,8 +59,8 @@ if uploaded_shp_file is not None:
             st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Обновляем карту с шейп-файлом
-            m = leafmap.Map(center=[center_lat, center_lon], zoom=10)
+            # Обновляем карту с шейп-файлом, используя фиксированный центр на Казахстане
+            m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
             # Отображаем обновленную карту
