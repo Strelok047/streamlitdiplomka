@@ -3,7 +3,7 @@ import zipfile
 import os
 import tempfile
 import geopandas as gpd
-import leafmap.foliumap as leafmap
+import geemap.foliumap as geemap
 
 # Настройка страницы Streamlit
 st.set_page_config(layout="wide")
@@ -26,7 +26,7 @@ st.sidebar.info(
 st.title("Interactive Map with Heatmap")
 
 # Изначально показываем карту с центром на Казахстане
-m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
+m = geemap.Map(center=[48.0196, 66.9237], zoom=5)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
