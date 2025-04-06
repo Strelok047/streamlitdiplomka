@@ -28,9 +28,6 @@ st.title("Interactive Map with Heatmap")
 
 # Изначально показываем карту с центром на Казахстане
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
-
-# Отображение карты по умолчанию
-st.subheader("Default Interactive Map")
 st_folium(m)
 
 # Функция загрузки архива с шейп-файлами
