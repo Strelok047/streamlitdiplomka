@@ -59,11 +59,6 @@ if uploaded_shp_file is not None:
             st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Определяем координаты для центрирования карты на основе геометрии шейп-файла
-            bounds = gdf.total_bounds
-            center_lat = (bounds[1] + bounds[3]) / 2
-            center_lon = (bounds[0] + bounds[2]) / 2
-
             # Обновляем карту с шейп-файлом
             m = leafmap.Map(center=[center_lat, center_lon], zoom=10)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
