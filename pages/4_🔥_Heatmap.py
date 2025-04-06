@@ -67,3 +67,4 @@ if uploaded_shp_file is not None:
             st_folium(m, width=700)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
+m.to_streamlit(height=600)
