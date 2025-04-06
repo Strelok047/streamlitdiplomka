@@ -60,7 +60,7 @@ if uploaded_shp_file is not None:
             st.write(gdf)
 
             # Обновляем карту с шейп-файлом
-            m = leafmap.Map(center=[40, -100], zoom=4)
+            m = leafmap.Map(center=[70, -50], zoom=4)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
             # Отображаем обновленную карту
