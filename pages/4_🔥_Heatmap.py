@@ -25,7 +25,6 @@ st.sidebar.info(
 )
 
 st.title("Interactive Map with Heatmap")
-
 # Изначально показываем карту с центром на Казахстане
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 st_folium(m)
