@@ -53,9 +53,13 @@ if uploaded_shp_file is not None:
             # Загружаем шейп-файл с помощью geopandas
             gdf = gpd.read_file(shapefile_path)
 
-            # Отображаем данные о шейп-файле в Streamlit
+            # Проверим, правильно ли загрузился шейп-файл
             st.write("Data from Shapefile:")
             st.write(gdf)
+
+            # Проверим тип геометрии, чтобы убедиться, что данные можно отобразить
+            st.write("Geometry Type:")
+            st.write(gdf.geom_type.unique())
 
             # Обновляем карту с шейп-файлом, используя фиксированный центр на Казахстане
             m.add_gdf(gdf, layer_name="Shapefile Layer")
