@@ -8,6 +8,7 @@ import leafmap.foliumap as leafmap
 # Настройка страницы Streamlit
 st.set_page_config(layout="wide")
 
+# Информация в боковой панели
 st.sidebar.info(
     """
     - Web App URL: <https://streamlit.gishub.org>
@@ -22,7 +23,14 @@ st.sidebar.info(
     """
 )
 
-st.title("Shapefile Upload and Heatmap")
+st.title("Interactive Map with Heatmap")
+
+# Изначально показываем карту без данных
+m = leafmap.Map(center=[40, -100], zoom=4)
+
+# Отображение карты по умолчанию
+st.subheader("Default Interactive Map")
+st_folium(m, width=700)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -46,14 +54,15 @@ if uploaded_shp_file is not None:
             gdf = gpd.read_file(shapefile_path)
 
             # Отображаем данные о шейп-файле в Streamlit
+            st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Создаем карту с шейп-файлом
+            # Обновляем карту с шейп-файлом
             m = leafmap.Map(center=[40, -100], zoom=4)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Отображаем карту в Streamlit
-            m.to_streamlit(height=700)
+            # Отображаем обновленную карту
+            st.subheader("Map with Shapefile Data")
+            st_folium(m, width=700)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
-
