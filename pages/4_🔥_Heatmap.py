@@ -26,9 +26,9 @@ st.sidebar.info(
 
 st.title("Interactive Map with Heatmap")
 
-# Изначально показываем карту без данных
-m = leafmap.Map(center=[70, -50], zoom=4)
-m.to_streamlit(center=[70, -50], zoom=4,height=600)
+# Изначально показываем карту с центром на Казахстане
+m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
+m.to_streamlit(center=[48.0196, 66.9237], zoom=5, height=600)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
@@ -59,8 +59,13 @@ if uploaded_shp_file is not None:
             st.write("Data from Shapefile:")
             st.write(gdf)
 
+            # Определяем координаты для центрирования карты на основе геометрии шейп-файла
+            bounds = gdf.total_bounds
+            center_lat = (bounds[1] + bounds[3]) / 2
+            center_lon = (bounds[0] + bounds[2]) / 2
+
             # Обновляем карту с шейп-файлом
-            m = leafmap.Map(center=[70, -50], zoom=4)
+            m = leafmap.Map(center=[center_lat, center_lon], zoom=10)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
             # Отображаем обновленную карту
