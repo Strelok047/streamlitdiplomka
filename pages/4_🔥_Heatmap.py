@@ -1,67 +1,83 @@
+from io import BytesIO
+import ee
 import streamlit as st
-import zipfile
-import os
-import tempfile
+import geemap.foliumap as geemap
 import geopandas as gpd
-import geemap
+import matplotlib.pyplot as plt
+import zipfile
+import tempfile
+import os
 
-# Настройка страницы Streamlit
-st.set_page_config(layout="wide")
 
-# Информация в боковой панели
-st.sidebar.info(
-    """
-    - Web App URL: <https://streamlit.gishub.org>
-    - GitHub repository: <https://github.com/giswqs/streamlit-geospatial>
-    """
-)
+def setup():
+    st.set_page_config(layout="wide", page_title="Satellite imagery", page_icon='🛰️')
+    st.header("🛰️Satellite Imagery")
 
-st.sidebar.title("Contact")
-st.sidebar.info(
-    """
-    Qiusheng Wu at [wetlands.io](https://wetlands.io) | [GitHub](https://github.com/giswqs) | [Twitter](https://twitter.com/giswqs) | [YouTube](https://youtube.com/@giswqs) | [LinkedIn](https://www.linkedin.com/in/giswqs)
-    """
-)
 
-st.title("Interactive Map with Heatmap")
+def Navbar():
+    with st.sidebar:
+        st.page_link('app.py', label='Satellite imagery', icon='🛰️')
+        st.page_link('pages/graph.py', label='Graph', icon='📈')
+        st.page_link('pages/about.py', label='About', icon='📖')
 
-# Изначально показываем карту с центром на Казахстане
-m = geemap.Map(center=[48.0196, 66.9237], zoom=5)
+def main():
+    setup()
+    Navbar()
 
-# Отображение карты по умолчанию
-st.subheader("Default Interactive Map")
-m.to_streamlit(height=600)
+    row0_col1, row0_col2, row0_col3, row0_col4, row0_col5 = st.columns([1, 1, 1, 1, 1])
+    row1_col1, row1_col2 = st.columns([5, 1])
+    row2_col1, row2_col2, row2_col3 = st.columns([1, 1, 1])
 
-# Функция загрузки архива с шейп-файлами
-uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
+    Map = geemap.Map()
 
-if uploaded_shp_file is not None:
-    # Распаковываем архив
-    with tempfile.TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(uploaded_shp_file, 'r') as zip_ref:
-            zip_ref.extractall(tmpdir)
+    st.sidebar.markdown("<h3 style='text-align: center; color: grey;'>OR</h3>", unsafe_allow_html=True)
 
-        # Ищем шейп-файлы (.shp)
-        shapefile_path = None
-        for root, dirs, files in os.walk(tmpdir):
-            for file in files:
-                if file.endswith(".shp"):
-                    shapefile_path = os.path.join(root, file)
-                    break
+    # Upload a zipped shapefile
+    uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
 
-        if shapefile_path:
-            # Загружаем шейп-файл с помощью geopandas
-            gdf = gpd.read_file(shapefile_path)
+    if uploaded_shp_file is not None:
+        # Extract the zip file
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with zipfile.ZipFile(uploaded_shp_file, 'r') as zip_ref:
+                zip_ref.extractall(tmpdir)
 
-            # Отображаем данные о шейп-файле в Streamlit
-            st.write("Data from Shapefile:")
-            st.write(gdf)  # Показываем таблицу данных из шейп-файла
+            # Find the shapefile within the extracted files
+            shapefile_path = None
+            for root, dirs, files in os.walk(tmpdir):
+                for file in files:
+                    if file.endswith(".shp"):
+                        shapefile_path = os.path.join(root, file)
+                        break
 
-            # Добавляем шейп-файл на существующую карту
-            m.add_gdf(gdf, layer_name="Shapefile Layer")
+            if shapefile_path:
+                # Read the shapefile into a GeoDataFrame
+                gdf = gpd.read_file(shapefile_path)
 
-            # Отображаем обновленную карту с добавленным слоем
-            st.subheader("Map with Shapefile Data")
-            m.to_streamlit(height=600)  # Отображаем обновленную карту
-        else:
-            st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
+                # Create the plot
+                fig, ax = plt.subplots()
+                gdf.plot(ax=ax)
+                plt.xticks(rotation=90, fontsize=7)
+                plt.yticks(fontsize=7)
+
+                # Save the plot to a BytesIO object
+                buf = BytesIO()
+                plt.savefig(buf, format='png')
+                buf.seek(0)
+
+                # Display the plot in Streamlit
+                with row2_col1:
+                    st.image(buf, caption='Geopandas Plot')
+            else:
+                st.error("Shapefile (.shp) not found in the uploaded zip file.")
+
+            if not gdf.empty:
+                roi = geemap.geopandas_to_ee(gdf)
+
+        Map.add_gdf(gdf, 'polygon')
+
+    with row1_col1:
+        Map.to_streamlit(height=600)
+
+
+if __name__ == "__main__":
+    main()
