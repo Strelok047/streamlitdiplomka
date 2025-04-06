@@ -59,8 +59,5 @@ if uploaded_shp_file is not None:
             m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Отображаем обновленную карту
-            st.subheader("Map with Shapefile Data")
-            m.to_streamlit(height=600)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
