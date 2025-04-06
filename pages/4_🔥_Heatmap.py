@@ -63,6 +63,5 @@ if uploaded_shp_file is not None:
             # Обновляем карту с шейп-файлом на Казахстане
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
