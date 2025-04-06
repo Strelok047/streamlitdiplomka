@@ -1,38 +1,25 @@
-from io import BytesIO
-import ee
 import streamlit as st
-import geemap.foliumap as geemap
-import geopandas as gpd
-import matplotlib.pyplot as plt
 import zipfile
-import tempfile
 import os
-
+import tempfile
+import geopandas as gpd
+import folium
+from io import BytesIO
+import matplotlib.pyplot as plt
 
 def setup():
     st.set_page_config(layout="wide", page_title="Satellite imagery", page_icon='🛰️')
     st.header("🛰️Satellite Imagery")
 
-
-def Navbar():
-    with st.sidebar:
-        st.page_link('app.py', label='Satellite imagery', icon='🛰️')
-        st.page_link('pages/graph.py', label='Graph', icon='📈')
-        st.page_link('pages/about.py', label='About', icon='📖')
-
 def main():
     setup()
-    Navbar()
 
     row0_col1, row0_col2, row0_col3, row0_col4, row0_col5 = st.columns([1, 1, 1, 1, 1])
     row1_col1, row1_col2 = st.columns([5, 1])
     row2_col1, row2_col2, row2_col3 = st.columns([1, 1, 1])
 
-    Map = geemap.Map()
-
-    roi = None
-    coordinates = None
-
+    # Create a map with folium
+    m = folium.Map(location=[48.0196, 66.9237], zoom_start=5)
 
     st.sidebar.markdown("<h3 style='text-align: center; color: grey;'>OR</h3>", unsafe_allow_html=True)
 
@@ -74,15 +61,15 @@ def main():
             else:
                 st.error("Shapefile (.shp) not found in the uploaded zip file.")
 
+            # If the GeoDataFrame is not empty, add the shapefile to the map
             if not gdf.empty:
-                roi = geemap.geopandas_to_ee(gdf)
-
-
-        Map.add_gdf(gdf, 'polygon')
+                # Add the GeoDataFrame as a layer to the map
+                folium.GeoJson(gdf).add_to(m)
 
     with row1_col1:
-        Map.to_streamlit(height=600)
-
+        # Display the folium map using streamlit_folium
+        from streamlit_folium import st_folium
+        st_folium(m, width=700, height=600)
 
 if __name__ == "__main__":
     main()
