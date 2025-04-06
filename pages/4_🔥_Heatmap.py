@@ -3,7 +3,7 @@ import zipfile
 import os
 import tempfile
 import geopandas as gpd
-import geemap.foliumap as geemap
+import geemap
 
 # Настройка страницы Streamlit
 st.set_page_config(layout="wide")
