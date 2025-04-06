@@ -1,34 +1,50 @@
+import zipfile
+import os
+import pandas as pd
 import streamlit as st
 import leafmap.foliumap as leafmap
 
-st.set_page_config(layout="wide")
+# Путь к архиву
+archive_path = "C:/Users/bekzh/Desktop/дипломка/agroclim_N_C_E.zip"
 
-st.sidebar.info(
-    """
-    - Web App URL: <https://streamlit.gishub.org>
-    - GitHub repository: <https://github.com/giswqs/streamlit-geospatial>
-    """
-)
+# Распаковываем архив
+with zipfile.ZipFile(archive_path, 'r') as zip_ref:
+    # Список всех файлов в архиве
+    zip_ref.printdir()
 
-st.sidebar.title("Contact")
-st.sidebar.info(
-    """
-    Qiusheng Wu at [wetlands.io](https://wetlands.io) | [GitHub](https://github.com/giswqs) | [Twitter](https://twitter.com/giswqs) | [YouTube](https://youtube.com/@giswqs) | [LinkedIn](https://www.linkedin.com/in/giswqs)
-    """
-)
+    # Извлекаем все файлы
+    zip_ref.extractall("extracted_files")  # Здесь файлы будут извлечены в папку "extracted_files"
 
-st.title("Heatmap")
+# Проверяем содержимое извлеченной папки
+extracted_files = os.listdir("extracted_files")
+st.write("Извлеченные файлы:", extracted_files)
 
-with st.expander("See source code"):
-    with st.echo():
-        filepath = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
-        m = leafmap.Map(center=[40, -100], zoom=4)
-        m.add_heatmap(
-            filepath,
-            latitude="latitude",
-            longitude="longitude",
-            value="pop_max",
-            name="Heat map",
-            radius=20,
-        )
-m.to_streamlit(height=700)
+# Предположим, что один из файлов - это CSV
+# Замените 'your_data.csv' на фактическое имя CSV файла
+csv_file_path = os.path.join("extracted_files", "agroclim_data.csv")
+
+# Проверяем, существует ли CSV файл
+if os.path.exists(csv_file_path):
+    # Загружаем CSV в DataFrame
+    df = pd.read_csv(csv_file_path)
+
+    # Отображаем данные в Streamlit
+    st.write(df)
+
+    # Создаем карту с тепловой картой
+    st.title("Heatmap")
+
+    with st.expander("See source code"):
+        with st.echo():
+            m = leafmap.Map(center=[40, -100], zoom=4)
+            m.add_heatmap(
+                csv_file_path,
+                latitude="latitude",
+                longitude="longitude",
+                value="pop_max",
+                name="Heat map",
+                radius=20,
+            )
+    m.to_streamlit(height=700)
+else:
+    st.error("CSV файл не найден в извлеченных данных.")
