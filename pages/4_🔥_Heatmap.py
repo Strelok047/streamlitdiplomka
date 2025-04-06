@@ -28,16 +28,17 @@ if shapefiles:
     st.write(f"Загружаем шейп-файл: {shapefile_path}")
 
     # Загружаем шейп-файл с помощью geopandas
-    gdf = gpd.read_file(shapefile_path)
+    try:
+        gdf = gpd.read_file(shapefile_path)
+        st.write(gdf)  # Отображаем DataFrame
 
-    # Отображаем информацию о шейп-файле в Streamlit
-    st.write(gdf)
+        # Создаем карту с шейп-файлом
+        st.title("Map with Shapefile Data")
 
-    # Создаем карту с шейп-файлом
-    st.title("Map with Shapefile Data")
-
-    m = leafmap.Map(center=[40, -100], zoom=4)
-    m.add_gdf(gdf, layer_name="Shapefile Layer")
-    m.to_streamlit(height=700)
+        m = leafmap.Map(center=[40, -100], zoom=4)
+        m.add_gdf(gdf, layer_name="Shapefile Layer")
+        m.to_streamlit(height=700)
+    except Exception as e:
+        st.error(f"Ошибка при загрузке шейп-файла: {e}")
 else:
     st.error("Шейп-файлы не найдены в извлеченных данных.")
