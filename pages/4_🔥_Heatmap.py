@@ -28,7 +28,7 @@ st.title("Interactive Map with Heatmap")
 
 # Изначально показываем карту с центром на Казахстане
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
-st_folium(m, width=700)
+st_folium(m, width=600)
 
 
 # Функция загрузки архива с шейп-файлами
@@ -54,7 +54,7 @@ if uploaded_shp_file is not None:
 
             # Отображаем обновленную карту
             st.subheader("Map with Shapefile Data")
-            st_folium(m, width=800)
+            st_folium(m, width=600)
 
             # Отображаем данные о шейп-файле в Streamlit
             st.write("Data from Shapefile:")
