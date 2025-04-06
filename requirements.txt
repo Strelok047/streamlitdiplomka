@@ -17,6 +17,7 @@ streamlit-folium
 streamlit-keplergl
 tropycal
 fiona
+ipython
 # git+https://github.com/giswqs/leafmap
 # git+https://github.com/giswqs/geemap
 
