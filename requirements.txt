@@ -18,6 +18,12 @@ streamlit-keplergl
 tropycal
 fiona
 ipython
+geemap
+streamlit
+xlrd
+matplotlib
+pandas
+
 # git+https://github.com/giswqs/leafmap
 # git+https://github.com/giswqs/geemap
 
