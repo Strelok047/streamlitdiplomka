@@ -1,14 +1,11 @@
 import streamlit as st
-import leafmap.foliumap as leafmap
 import zipfile
 import os
 import tempfile
 import geopandas as gpd
-import matplotlib.pyplot as plt
-from io import BytesIO
-import geemap
+import leafmap.foliumap as leafmap
 
-# Streamlit page configuration
+# Настройка страницы Streamlit
 st.set_page_config(layout="wide")
 
 st.sidebar.info(
@@ -19,25 +16,24 @@ st.sidebar.info(
 )
 
 st.sidebar.title("Contact")
-
 st.sidebar.info(
     """
     Qiusheng Wu at [wetlands.io](https://wetlands.io) | [GitHub](https://github.com/giswqs) | [Twitter](https://twitter.com/giswqs) | [YouTube](https://youtube.com/@giswqs) | [LinkedIn](https://www.linkedin.com/in/giswqs)
     """
 )
 
-st.title("Heatmap")
+st.title("Shapefile Upload and Heatmap")
 
-# File uploader for zipped shapefile
+# Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
 
 if uploaded_shp_file is not None:
-    # Extract the zip file
+    # Распаковываем архив
     with tempfile.TemporaryDirectory() as tmpdir:
         with zipfile.ZipFile(uploaded_shp_file, 'r') as zip_ref:
             zip_ref.extractall(tmpdir)
 
-        # Find the shapefile within the extracted files
+        # Ищем шейп-файлы (.shp)
         shapefile_path = None
         for root, dirs, files in os.walk(tmpdir):
             for file in files:
@@ -46,41 +42,18 @@ if uploaded_shp_file is not None:
                     break
 
         if shapefile_path:
-            # Read the shapefile into a GeoDataFrame
+            # Загружаем шейп-файл с помощью geopandas
             gdf = gpd.read_file(shapefile_path)
 
-            # Create the plot
-            fig, ax = plt.subplots()
-            gdf.plot(ax=ax)
-            plt.xticks(rotation=90, fontsize=7)
-            plt.yticks(fontsize=7)
+            # Отображаем данные о шейп-файле в Streamlit
+            st.write(gdf)
 
-            # Save the plot to a BytesIO object
-            buf = BytesIO()
-            plt.savefig(buf, format='png')
-            buf.seek(0)
+            # Создаем карту с шейп-файлом
+            m = leafmap.Map(center=[40, -100], zoom=4)
+            m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Display the plot in Streamlit
-            st.image(buf, caption='Geopandas Plot')
-
-            # Convert the GeoDataFrame to Earth Engine (if not empty)
-            if not gdf.empty:
-                roi = geemap.geopandas_to_ee(gdf)
-                st.write("Region of Interest (ROI) in Earth Engine:", roi)
+            # Отображаем карту в Streamlit
+            m.to_streamlit(height=700)
         else:
-            st.error("Shapefile (.shp) not found in the uploaded zip file.")
+            st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
 
-# Leafmap heatmap example
-with st.expander("See source code for heatmap"):
-    with st.echo():
-        filepath = "https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/us_cities.csv"
-        m = leafmap.Map(center=[40, -100], zoom=4)
-        m.add_heatmap(
-            filepath,
-            latitude="latitude",
-            longitude="longitude",
-            value="pop_max",
-            name="Heat map",
-            radius=20,
-        )
-m.to_streamlit(height=700)
