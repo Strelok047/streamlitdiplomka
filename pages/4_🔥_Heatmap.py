@@ -32,6 +32,7 @@ m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
 st_folium(m, width=700, height=600)
+
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
 
