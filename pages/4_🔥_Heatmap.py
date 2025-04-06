@@ -59,6 +59,5 @@ if uploaded_shp_file is not None:
 
             # Отображаем обновленную карту с добавленным слоем
             st.subheader("Map with Shapefile Data")
-            st_folium(m)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
