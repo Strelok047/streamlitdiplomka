@@ -52,16 +52,17 @@ if uploaded_shp_file is not None:
             # Загружаем шейп-файл с помощью geopandas
             gdf = gpd.read_file(shapefile_path)
 
+            # Отображаем обновленную карту
+            st.subheader("Map with Shapefile Data")
+            st_folium(m, width=700)
+
             # Отображаем данные о шейп-файле в Streamlit
             st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Обновляем карту с шейп-файлом, используя фиксированный центр на Казахстане
-            m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
+            # Обновляем карту с шейп-файлом на Казахстане
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Отображаем обновленную карту
-            st.subheader("Map with Shapefile Data")
-            st_folium(m, width=700)
+
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
