@@ -27,8 +27,8 @@ st.sidebar.info(
 st.title("Interactive Map with Heatmap")
 
 # Изначально показываем карту без данных
-m = leafmap.Map(center=[40, -100], zoom=4)
-m.to_streamlit(center=[40, -100], zoom=4,height=600)
+m = leafmap.Map(center=[70, -50], zoom=4)
+m.to_streamlit(center=[70, -50], zoom=4,height=600)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
@@ -68,4 +68,3 @@ if uploaded_shp_file is not None:
             st_folium(m, width=700)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
-m.to_streamlit(height=600)
