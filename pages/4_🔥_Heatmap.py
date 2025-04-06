@@ -28,6 +28,7 @@ st.title("Interactive Map with Heatmap")
 
 # Изначально показываем карту без данных
 m = leafmap.Map(center=[40, -100], zoom=4)
+m.to_streamlit(center=[40, -100], zoom=4,height=600)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
