@@ -4,7 +4,6 @@ import os
 import tempfile
 import geopandas as gpd
 import leafmap.foliumap as leafmap
-from streamlit_folium import st_folium
 
 # Настройка страницы Streamlit
 st.set_page_config(layout="wide")
@@ -26,12 +25,12 @@ st.sidebar.info(
 
 st.title("Interactive Map with Heatmap")
 
-# Изначально показываем карту с центром на Казахстане, без данных
+# Изначально показываем карту с центром на Казахстане
 m = leafmap.Map(center=[48.0196, 66.9237], zoom=5)
 
 # Отображение карты по умолчанию
 st.subheader("Default Interactive Map")
-st_folium(m)
+m.to_streamlit(height=600)
 
 # Функция загрузки архива с шейп-файлами
 uploaded_shp_file = st.sidebar.file_uploader("Upload a Zipped Shapefile", type=["zip"])
@@ -58,11 +57,11 @@ if uploaded_shp_file is not None:
             st.write("Data from Shapefile:")
             st.write(gdf)
 
-            # Добавляем шейп-файл на ту же карту
+            # Обновляем карту с шейп-файлом, используя фиксированный центр на Казахстане
             m.add_gdf(gdf, layer_name="Shapefile Layer")
 
-            # Отображаем обновленную карту с добавленным шейп-файлом
+            # Отображаем обновленную карту
             st.subheader("Map with Shapefile Data")
-            st_folium(m)
+            m.to_streamlit(height=600)
         else:
             st.error("Шейп-файл (.shp) не найден в загруженном архиве.")
